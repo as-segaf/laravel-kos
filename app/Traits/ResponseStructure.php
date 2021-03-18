@@ -11,13 +11,21 @@ trait ResponseStructure
      * @param string $message
      * @param array $data
      */
-    public function success($code, $message, $data)
+    public function successResponse($code, $message, $data, $token = null)
     {
+        if ($token == null) {
+            return response()->json([
+                'code' => $code,
+                'message' => $message,
+                'data' => $data
+            ],$code);
+        }
         return response()->json([
             'code' => $code,
             'message' => $message,
-            'data' => $data
-        ],$code);
+            'data' => $data,
+            'token' => $token
+        ]);
     }
 
     /**
@@ -26,7 +34,7 @@ trait ResponseStructure
      * @param int $code
      * @param string $message
      */
-    public function error($code, $message)
+    public function errorResponse($code, $message)
     {
         return response()->json([
             'code' => $code,
