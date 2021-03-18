@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegistrationRequest;
 use App\Interfaces\UserInterface;
+use App\Traits\ResponseStructure;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
+    use ResponseStructure;
+
     protected $userRepository;
 
     public function __construct(UserInterface $userRepository)
@@ -21,16 +24,9 @@ class AuthController extends Controller
         try {
             $user = $this->userRepository->createUser($request);
         } catch (\Exception $exception) {
-            return response()->json([
-                'code' => 500,
-                'message' => $exception->getMessage(),
-            ],500);
+            return $this->error(500,$exception->getMessage());
         }
 
-        return response()->json([
-            'code' => 200,
-            'message' => 'success',
-            'data' => $user
-        ],200);
+        return $this->success(200,'success',$user);
     }
 }
