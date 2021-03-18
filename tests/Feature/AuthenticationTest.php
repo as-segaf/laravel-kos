@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -49,6 +50,73 @@ class AuthenticationTest extends TestCase
                     'email' => ['The email field is required.'],
                     'password' => ['The password field is required.'],
                 ]
+            ]);
+    }
+
+    public function testSuccessfulLogin()
+    {
+        $this->withoutExceptionHandling();
+        $user = User::create([
+            'name' => 'testing',
+            'email' => 'testing@testing.com',
+            'password' => Hash::make('testing123')
+        ]);
+
+        $loginData = [
+            'email' => 'testing@testing.com',
+            'password' => 'testing123'
+        ];
+
+        $this->json('post', '/api/login', $loginData, ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'code',
+                'message',
+                'data' => [
+                    'id',
+                    'name',
+                    'email'
+                ],
+                'token'
+            ]);
+
+        $this->assertAuthenticated();
+    }
+
+    public function testRequiredFieldsForLogin()
+    {
+        // $this->withoutExceptionHandling();
+        $this->json('post', '/api/login', ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJson([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'email' => ['The email field is required.'],
+                    'password' => ['The password field is required.']
+                ]
+            ]);
+    }
+
+    public function testEmailAndPasswordMustMatch()
+    {
+        $this->withoutExceptionHandling();
+
+        User::create([
+            'name' => 'testing',
+            'email' => 'testing@testing.com',
+            'password' => 'testing123'
+        ]);
+
+        $loginData = [
+            'email' => 'testing@testing.com',
+            'password' => 'nottesting123'
+        ];
+
+        $this->json('post', '/api/login', $loginData, ['Accept' => 'application/json'])
+            ->assertStatus(401)
+            ->assertJson([
+                'code' => 401,
+                'message' => 'Email and password does not match.',
             ]);
     }
 }
