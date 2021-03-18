@@ -7,7 +7,9 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
 use App\Services\AuthService;
 use App\Traits\ResponseStructure;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -23,10 +25,24 @@ class AuthController extends Controller
     public function register(RegistrationRequest $request)
     {
         try {
-            $user = $this->authService->register($request);
+            $data = $this->authService->register($request);
         } catch (\Exception $exception) {
-            return $this->error(500,$exception->getMessage());
+            return $this->errorResponse(500, $exception->getMessage());
         }
-        return $this->success(200,'success',$user);
+
+        return $this->successResponse(200, 'success', $data);
+    }
+
+    public function login(LoginRequest $request)
+    {
+        try {
+            $data = $this->authService->login($request);
+        } catch(AuthenticationException $exception) {
+            return $this->errorResponse(401, $exception->getMessage());
+        } catch (\Exception $exception) {
+            return $this->errorResponse(500, $exception->getMessage());
+        }
+
+        return $this->successResponse(200, 'Login Successfully', $data['user'], $data['token']);
     }
 }
