@@ -159,9 +159,9 @@ class AuthenticationTest extends TestCase
         // $this->withoutExceptionHandling();
         $this->json('post', '/api/logout', ['Accept' => 'application/json'])
             ->assertStatus(401)
-            ->assertJsonStructure([
-                'code',
-                'message'
+            ->assertJson([
+                'code' => 401,
+                'message' => 'You are unauthenticated.'
             ]);
     }
 }
