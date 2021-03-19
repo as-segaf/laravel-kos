@@ -121,6 +121,23 @@ class AuthenticationTest extends TestCase
             ]);
     }
 
+    public function testCanNotLoginWithUnregisteredCredential()
+    {
+        $this->withoutExceptionHandling();
+
+        $loginData = [
+            'email' => 'testing@testing.com',
+            'password' => 'testing123'
+        ];
+        
+        $this->json('post', '/api/login', $loginData, ['Accept' => 'application/json'])
+            ->assertStatus(401)
+            ->assertJson([
+                'code' => 401,
+                'message' => 'Email and password does not match.'
+            ]);
+    }
+
     public function testSuccessfulLogout()
     {
         $this->withoutExceptionHandling();
