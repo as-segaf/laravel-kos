@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -80,7 +81,7 @@ class AuthenticationTest extends TestCase
                 'token'
             ]);
 
-        $this->assertAuthenticated();
+        // $this->assertAuthenticated();
     }
 
     public function testRequiredFieldsForLogin()
@@ -117,6 +118,33 @@ class AuthenticationTest extends TestCase
             ->assertJson([
                 'code' => 401,
                 'message' => 'Email and password does not match.',
+            ]);
+    }
+
+    public function testSuccessfulLogout()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $this->json('post', '/api/logout', ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'code',
+                'message',
+                'data'
+            ]);
+    }
+
+    public function testOnlyAuthenticatedUserCanLogout()
+    {
+        // $this->withoutExceptionHandling();
+        $this->json('post', '/api/logout', ['Accept' => 'application/json'])
+            ->assertStatus(401)
+            ->assertJsonStructure([
+                'code',
+                'message'
             ]);
     }
 }
