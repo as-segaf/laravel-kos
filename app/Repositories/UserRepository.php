@@ -6,6 +6,7 @@ use App\Http\Resources\UserResource;
 use App\Interfaces\UserInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\AuthenticationException;
 
 class UserRepository implements UserInterface
 {
@@ -14,7 +15,7 @@ class UserRepository implements UserInterface
         $user = User::where('email', $email)->first();
     
         if (!$user) {
-            throw new Exception("User not found", 1);
+            throw new AuthenticationException('Email and password does not match.');
         }
 
         return new UserResource($user);
