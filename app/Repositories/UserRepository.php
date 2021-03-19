@@ -9,6 +9,17 @@ use Illuminate\Support\Facades\Hash;
 
 class UserRepository implements UserInterface
 {
+    public function findUserByEmail($email)
+    {
+        $user = User::where('email', $email)->first();
+    
+        if (!$user) {
+            throw new Exception("User not found", 1);
+        }
+
+        return new UserResource($user);
+    }
+
     public function createUser($request)
     {
         $user = User::create([
