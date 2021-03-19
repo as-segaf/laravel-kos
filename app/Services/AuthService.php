@@ -40,4 +40,9 @@ class AuthService
             'token' => $token
         ];
     }
+
+    public function logout()
+    {
+        return auth()->user()->currentAccessToken()->delete();
+    }
 }

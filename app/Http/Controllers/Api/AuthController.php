@@ -9,7 +9,6 @@ use App\Services\AuthService;
 use App\Traits\ResponseStructure;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -44,5 +43,16 @@ class AuthController extends Controller
         }
 
         return $this->successResponse(200, 'Login Successfully', $data['user'], $data['token']);
+    }
+
+    public function logout()
+    {
+        try {
+            $this->authService->logout();
+        } catch (\Exception $exception) {
+            return $this->errorResponse(500, $exception->getMessage());
+        }
+
+        return $this->successResponse(200, 'Logout Successfully', []);
     }
 }
