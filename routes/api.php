@@ -26,5 +26,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/room', [RoomController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function() {
+    Route::resource('room', RoomController::class)->except('index','create','edit');
     Route::post('/logout', [AuthController::class, 'logout']);
 });
