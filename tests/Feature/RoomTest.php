@@ -48,6 +48,7 @@ class RoomTest extends TestCase
     public function testGuestCanSeeRoomList()
     {
         $this->withoutExceptionHandling();
+
         Room::create([
                 'name' => 'room 1',
                 'description' => 'this is good room',
@@ -61,6 +62,7 @@ class RoomTest extends TestCase
             'width' => 2,
             'status' => 'unused'
         ]);
+
         $this->json('get', '/api/room', ['Accept' => 'application/json'])
             ->assertStatus(200)
             ->assertJsonStructure([
@@ -82,8 +84,8 @@ class RoomTest extends TestCase
     public function testSuccessfulCreateRoom()
     {
         $this->withoutExceptionHandling();
-        $user = $this->createAdmin();
 
+        $user = $this->createAdmin();
         $room = [
             'name' => 'room 1',
             'description' => 'a good room',
@@ -116,8 +118,8 @@ class RoomTest extends TestCase
     public function testOnlyAdminCanCreateRoom()
     {
         $this->withoutExceptionHandling();
-        $user = $this->createUser();
 
+        $user = $this->createUser();
         $room = [
             'name' => 'room 1',
             'description' => 'a good room',
@@ -162,7 +164,7 @@ class RoomTest extends TestCase
         $this->withoutExceptionHandling();
 
         $room = $this->createRoom();
-
+        $user = $this->createAdmin();
         $updateData = [
             'name' => 'new room',
             'description' => 'a very good room',
@@ -170,8 +172,6 @@ class RoomTest extends TestCase
             'width' => 4,
             'status' => 'used'
         ];
-
-        $user = $this->createAdmin();
         
         Sanctum::actingAs($user);
 
@@ -205,7 +205,7 @@ class RoomTest extends TestCase
         $this->withoutExceptionHandling();
 
         $room = $this->createRoom();
-
+        $user = $this->createUser();
         $updateData = [
             'name' => 'new room',
             'description' => 'a very good room',
@@ -214,8 +214,6 @@ class RoomTest extends TestCase
             'status' => 'used'
         ];
 
-        $user = $this->createUser();
-        
         Sanctum::actingAs($user);
 
         $this->json('patch', '/api/room/'.$room->id, $updateData, ['Accept' => 'application/json'])
@@ -236,20 +234,8 @@ class RoomTest extends TestCase
 
     public function testRequiredFieldsForUpdateRoom()
     {
-        $room = Room::create([
-            'name' => 'room 1',
-            'description' => 'a good room',
-            'length' => 2,
-            'width' => 1,
-            'status' => 'unused'
-        ]);
-
-        $user = User::create([
-            'name' => 'testing',
-            'email' => 'testing@testing.com',
-            'password' => Hash::make('testing123'),
-            'is_admin' => 1
-        ]);
+        $room = $this->createRoom();
+        $user = $this->createAdmin();
         
         Sanctum::actingAs($user);
 
@@ -296,7 +282,7 @@ class RoomTest extends TestCase
 
         $room = $this->createRoom();
         $user = $this->createUser();
-        
+
         Sanctum::actingAs($user);
 
         $this->json('get', '/api/room/'.$room->id, ['Accept' => 'application/json'])
@@ -312,6 +298,65 @@ class RoomTest extends TestCase
                     'width',
                     'status'
                 ]
+            ]);
+    }
+
+    public function testSuccessfulDeleteRoom()
+    {
+        $this->withoutExceptionHandling();
+
+        $room = $this->createRoom();
+        $user = $this->createAdmin();
+        
+        Sanctum::actingAs($user);
+
+        $this->json('delete', '/api/room/'.$room->id, ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'code',
+                'message',
+                'data' => [
+                    'id',
+                    'name',
+                    'description',
+                    'length',
+                    'width',
+                    'status'
+                ]
+            ]);
+    }
+
+    public function testOnlyAdminCanDeleteRoom()
+    {
+        $this->withoutExceptionHandling();
+
+        $room = $this->createRoom();
+        $user = $this->createUser();
+
+        Sanctum::actingAs($user);
+
+        $this->json('delete', '/api/room/'.$room->id, ['Accept' => 'application/json'])
+            ->assertStatus(403)
+            ->assertJson([
+                'code' => 403,
+                'message' => 'You are not allowed to do this action.'
+            ]);
+    }
+
+    public function testDeleteWrongRoomId()
+    {
+        $this->withoutExceptionHandling();
+
+        $room = $this->createRoom();
+        $user = $this->createAdmin();
+
+        Sanctum::actingAs($user);
+
+        $this->json('delete', '/api/room/3', ['Accept' => 'application/json'])
+            ->assertStatus(404)
+            ->assertJsonStructure([
+                'code',
+                'message'
             ]);
     }
 }
