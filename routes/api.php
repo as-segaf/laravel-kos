@@ -24,8 +24,9 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/room', [RoomController::class, 'index']);
+Route::get('/room/{room}', [RoomController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function() {
-    Route::resource('room', RoomController::class)->except('index','create','edit');
+    Route::resource('room', RoomController::class)->only('store', 'update', 'destroy');
     Route::post('/logout', [AuthController::class, 'logout']);
 });
