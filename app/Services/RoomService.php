@@ -22,14 +22,24 @@ class RoomService
 
     public function store($request)
     {
-        // Gate::authorize('isAdmin');
-        // return $this->roomRepository->createRoom($request);
-
         if (Gate::allows('isAdmin')) {
             return $this->roomRepository->createRoom($request);
         }
 
         throw new AuthorizationException('You are not allowed to do this action.');
+    }
 
+    public function show($id)
+    {
+        return $this->roomRepository->findRoomById($id);
+    }
+
+    public function update($request, $id)
+    {
+        if (Gate::allows('isAdmin')) {
+            return $this->roomRepository->updateRoom($request, $id);
+        }
+
+        throw new AuthorizationException('You are not allowed to do this action.');
     }
 }

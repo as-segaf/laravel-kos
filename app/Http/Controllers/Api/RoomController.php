@@ -7,6 +7,7 @@ use App\Http\Requests\RoomRequest;
 use App\Services\RoomService;
 use App\Traits\ResponseStructure;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class RoomController extends Controller
@@ -63,18 +64,13 @@ class RoomController extends Controller
      */
     public function show($id)
     {
-        //
-    }
+        try {
+            $data = $this->roomService->show($id);
+        } catch (\Exception $exception) {
+            return $this->errorResponse(500, $exception->getMessage());
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return $this->successResponse(200, 'success', $data);
     }
 
     /**
@@ -84,9 +80,19 @@ class RoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(RoomRequest $request, $id)
     {
-        //
+        try {
+            $data = $this->roomService->update($request, $id);
+        } catch (AuthorizationException $exception) {
+            return $this->errorResponse(403, $exception->getMessage());
+        } catch (ModelNotFoundException $exception) {
+            return $this->errorResponse(404, 'Room not found');
+        } catch (\Exception $exception) {
+            return $this->errorResponse(500, $exception->getMessage());
+        }
+
+        return $this->successResponse(200, 'success', $data);
     }
 
     /**
