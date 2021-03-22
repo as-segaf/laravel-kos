@@ -42,4 +42,13 @@ class RoomService
 
         throw new AuthorizationException('You are not allowed to do this action.');
     }
+
+    public function destory($id)
+    {
+        if (Gate::allows('isAdmin')) {
+            return $this->roomRepository->deleteRoomById($id);
+        }
+
+        throw new AuthorizationException('You are not allowed to do this action.');
+    }
 }

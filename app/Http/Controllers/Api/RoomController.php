@@ -103,6 +103,16 @@ class RoomController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $data = $this->roomService->destory($id);
+        } catch (AuthorizationException $exception) {
+            return $this->errorResponse(403, $exception->getMessage());
+        } catch (ModelNotFoundException $exception) {
+            return $this->errorResponse(404, 'Room not found');
+        } catch (\Exception $exception) {
+            return $this->errorResponse(500, $exception->getMessage());
+        }
+
+        return $this->successResponse(200, 'success', $data);
     }
 }
