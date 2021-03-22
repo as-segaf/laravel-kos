@@ -13,6 +13,13 @@ class RoomRepository implements RoomRepositoryInterface
         return RoomResource::collection(Room::all());
     }
 
+    public function findRoomById($id)
+    {
+        $room = Room::findOrFail($id);
+
+        return new RoomResource($room);
+    }
+
     public function createRoom($request)
     {
         $room = Room::create([
@@ -25,6 +32,22 @@ class RoomRepository implements RoomRepositoryInterface
 
         if (!$room) {
             throw new Exception("Error Processing Request", 1);
+        }
+
+        return new RoomResource($room);
+    }
+
+    public function updateRoom($request, $id)
+    {
+        $room = Room::findOrFail($id);
+        $room->name = $request->name;
+        $room->description = $request->description;
+        $room->length = $request->length;
+        $room->width = $request->width;
+        $room->status = $request->status;
+
+        if (!$room->save()) {
+           throw new Exception("Error Processing Request", 1);
         }
 
         return new RoomResource($room);
