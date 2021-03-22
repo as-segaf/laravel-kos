@@ -140,6 +140,26 @@ class RoomTest extends TestCase
         $this->assertDatabaseCount('rooms', 0);
     }
 
+    public function testUnauthenticatedUserCannotCreateRoom()
+    {
+        $data = [
+            'name' => 'room 1',
+            'description' => 'a good room',
+            'length' => 2,
+            'width' => 1,
+            'status' => 'unused'
+        ];
+
+        $this->json('post', '/api/room', $data, ['Accept' => 'application/json'])
+            ->assertStatus(401)
+            ->assertJson([
+                'code' => 401,
+                'message' => 'You are unauthenticated.'
+            ]);
+        
+        $this->assertDatabaseCount('rooms', 0);
+    }
+
     public function testRequiredFieldsForCreateRoom()
     {
         $user = $this->createAdmin();
@@ -230,6 +250,27 @@ class RoomTest extends TestCase
             'width' => 1,
             'status' => 'unused'
         ]);
+    }
+
+    public function testUnauthenticatedUserCannotUpdateRoom()
+    {
+        $room = $this->createRoom();
+        $data = [
+            'name' => 'new room',
+            'description' => 'a new desc room',
+            'length' => 5,
+            'width' => 4,
+            'status' => 'used'
+        ];
+
+        $this->json('patch', '/api/room/'.$room->id, $data, ['Accept' => 'application/json'])
+            ->assertStatus(401)
+            ->assertJson([
+                'code' => 401,
+                'message' => 'You are unauthenticated.'
+            ]);
+        
+        $this->assertDatabaseMissing('rooms', $data);
     }
 
     public function testRequiredFieldsForUpdateRoom()
@@ -341,6 +382,20 @@ class RoomTest extends TestCase
                 'code' => 403,
                 'message' => 'You are not allowed to do this action.'
             ]);
+    }
+
+    public function testUnauthenticatedUserCannotDeleteRoom()
+    {
+        $room = $this->createRoom();
+
+        $this->json('delete', '/api/room/'.$room->id, ['Accept' => 'application/json'])
+            ->assertStatus(401)
+            ->assertJson([
+                'code' => 401,
+                'message' => 'You are unauthenticated.'
+            ]);
+
+        $this->assertDatabaseCount('rooms', 1);
     }
 
     public function testDeleteWrongRoomId()
