@@ -52,4 +52,15 @@ class RoomRepository implements RoomRepositoryInterface
 
         return new RoomResource($room);
     }
+
+    public function deleteRoomById($id)
+    {
+        $room = Room::findOrFail($id);
+        
+        if (!$room->delete()) {
+            throw new Exception("Error Processing Request", 1);
+        }
+
+        return new RoomResource($room);
+    }
 }

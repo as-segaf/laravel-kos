@@ -11,4 +11,6 @@ interface RoomRepositoryInterface
     public function createRoom($request);
 
     public function updateRoom($request, $id);
+
+    public function deleteRoomById($id);
 }
