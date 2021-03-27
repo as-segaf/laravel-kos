@@ -101,13 +101,85 @@ class OrderTest extends TestCase
 
     public function testGuestCannotSeeOrders()
     {
-        $this->withoutExceptionHandling();
+        // $this->withoutExceptionHandling();
 
         $this->json('get', '/api/order', ['Accept' => 'application/json'])
             ->assertStatus(401)
             ->assertJson([
                 'code' => 401,
                 'message' => 'You are unauthenticated.'
+            ]);
+    }
+
+    public function testSuccessfulCreateOrder()
+    {
+        $this->withExceptionHandling();
+
+        $room = $this->createRoom();
+        $user = $this->createUser();
+        $data = [
+            'room_id' => $room->id,
+            'duration_in_month' => 1
+        ];
+
+        Sanctum::actingAs($user);
+
+        $this->json('post', '/api/order', $data, ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'code',
+                'message',
+                'data' => [
+                    'id',
+                    'user_id',
+                    'room_id',
+                    'duration_in_month',
+                    'status',
+                    'time_paid'
+                ]
+            ]);
+        
+        $this->assertDatabaseHas('orders', [
+            'user_id' => $user->id,
+            'room_id' => $room->id,
+            'duration_in_month' => 1,
+            'status' => 'unpaid',
+            'time_paid' => null
+        ]);
+    }
+
+    public function testGuestCannotCreateOrder()
+    {
+        $room = $this->createRoom();
+        $data = [
+            'room_id' => $room->id,
+            'duration_in_month' => 1
+        ];
+
+        $this->json('post', '/api/order', $data, ['Accept' => 'application/json'])
+            ->assertStatus(401)
+            ->assertJson([
+                'code' => 401,
+                'message' => 'You are unauthenticated.'
+            ]);
+
+        $this->assertDatabaseMissing('orders', $data);
+    }
+
+    public function testRequiredFieldsForCreateOrder()
+    {
+        $user = $this->createUser();
+
+        Sanctum::actingAs($user);
+
+        $this->json('post', '/api/order', ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJson([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'room_id' => ['The room id field is required.'],
+                    'duration_in_month' => ['The duration in month field is required.']
+                ]
             ]);
     }
 }
