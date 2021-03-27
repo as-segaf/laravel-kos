@@ -17,4 +17,9 @@ class OrderService
     {
         return $this->orderRepository->getAllUserOrder();
     }
+
+    public function store($request)
+    {
+        return $this->orderRepository->createOrder($request);
+    }
 }
