@@ -14,4 +14,16 @@ class OrderRepository implements OrderRepositoryInterface
 
         return OrderResource::collection($orders);
     }
+
+    public function createOrder($request)
+    {
+        $order = Order::create([
+            'user_id' => auth()->id(),
+            'room_id' => $request->room_id,
+            'duration_in_month' => $request->duration_in_month,
+            'status' => 'unpaid',
+        ]);
+
+        return new OrderResource($order);
+    }
 }
