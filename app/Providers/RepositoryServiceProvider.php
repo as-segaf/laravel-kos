@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Interfaces\OrderRepositoryInterface;
 use App\Interfaces\RoomRepositoryInterface;
 use App\Interfaces\UserInterface;
+use App\Repositories\OrderRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
@@ -19,6 +21,7 @@ class RepositoryServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserInterface::class, UserRepository::class);
         $this->app->bind(RoomRepositoryInterface::class, RoomRepository::class);
+        $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
     }
 
     /**
