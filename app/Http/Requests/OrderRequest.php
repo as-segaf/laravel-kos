@@ -23,9 +23,17 @@ class OrderRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'room_id' => 'required',
-            'duration_in_month' => 'required'
-        ];
+        if ($this->method() == 'POST') {
+            return [
+                'room_id' => 'required',
+                'duration_in_month' => 'required'
+            ];
+        }
+
+        if ($this->method() == 'PATCH' || $this->method() == 'PUT') {
+            return [
+                'status' => 'required'
+            ];
+        }
     }
 }
