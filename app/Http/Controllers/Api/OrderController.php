@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderRequest;
 use App\Services\OrderService;
 use App\Traits\ResponseStructure;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -69,9 +70,17 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(OrderRequest $request, $id)
     {
-        //
+        try {
+            $data = $this->orderService->update($request, $id);
+        } catch (AuthorizationException $exception) {
+            return $this->errorResponse(403, $exception->getMessage());
+        } catch (\Exception $exception) {
+            return $this->errorResponse(500, $exception->getMessage());
+        }
+
+        return $this->successResponse(200, 'success', $data);
     }
 
     /**
