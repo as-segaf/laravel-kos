@@ -36,4 +36,11 @@ class OrderRepository implements OrderRepositoryInterface
         $order->time_paid = Carbon::now();
         $order->save();
     }
+
+    public function findOrderById($id)
+    {
+        $order = Order::findOrFail($id);
+
+        return new OrderResource($order);
+    }
 }

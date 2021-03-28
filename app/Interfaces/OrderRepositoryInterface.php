@@ -9,4 +9,6 @@ interface OrderRepositoryInterface
     public function createOrder($request);
 
     public function updateStatusOrder($request, $id);
+
+    public function findOrderById($id);
 }
