@@ -235,3 +235,115 @@ Response :
     }
 }
 ```
+
+## List Orders
+
+Request :
+- Method : GET
+- Endpoint : `/api/order`
+- Header :
+    - Content-Type: application/json
+    - Accept: application/json
+
+Response :
+
+```json 
+{
+    "code" : "integer",
+    "message" : "string",
+    "data" : {
+        "id" : "integer, unique",
+        "user_id" : "integer",
+        "room_id" : "integer",
+        "duration_in_month" : "integer",
+        "status" : "string",
+        "time_paid" : "timestamp"
+    }
+}
+```
+
+## Create Order
+
+Request :
+- Method : POST
+- Endpoint : `/api/order`
+- Header :
+    - Content-Type: application/json
+    - Accept: application/json
+- Body :
+
+```json
+{
+    "room_id" : "integer",
+    "duration_in_month" : "integer"
+}
+```
+
+Response :
+
+```json 
+{
+    "code" : "integer",
+    "message" : "string",
+    "data" : {
+        "id" : "integer, unique",
+        "user_id" : "integer",
+        "room_id" : "integer",
+        "duration_in_month" : "integer",
+        "status" : "string",
+        "time_paid" : "timestamp"
+    }
+}
+```
+
+## Get Order
+
+Request :
+- Method : GET
+- Endpoint : `/api/order/{order_id}`
+- Header :
+    - Content-Type: application/json
+    - Accept: application/json
+
+Response :
+
+```json 
+{
+    "code" : "integer",
+    "message" : "string",
+    "data" : {
+        "id" : "integer, unique",
+        "user_id" : "integer",
+        "room_id" : "integer",
+        "duration_in_month" : "integer",
+        "status" : "string",
+        "time_paid" : "timestamp"
+    }
+}
+```
+
+## Update Order
+
+Request :
+- Method : PATCH
+- Endpoint : `/api/order`
+- Header :
+    - Content-Type: application/json
+    - Accept: application/json
+
+Response :
+
+```json 
+{
+    "code" : "integer",
+    "message" : "string",
+    "data" : {
+        "id" : "integer, unique",
+        "user_id" : "integer",
+        "room_id" : "integer",
+        "duration_in_month" : "integer",
+        "status" : "string",
+        "time_paid" : "timestamp"
+    }
+}
+```
