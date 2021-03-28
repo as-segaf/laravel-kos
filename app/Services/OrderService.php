@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Interfaces\OrderRepositoryInterface;
+use App\Models\Order;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Gate;
 
@@ -31,6 +32,17 @@ class OrderService
             return $this->orderRepository->updateStatusOrder($request, $id);
         }
 
+        throw new AuthorizationException('You are not allowed to do this action.');
+    }
+
+    public function show($id)
+    {
+        $order = $this->orderRepository->findOrderById($id);
+
+        if (auth()->id() == $order->user_id) {
+            return $order;
+        }
+        
         throw new AuthorizationException('You are not allowed to do this action.');
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\OrderRequest;
 use App\Services\OrderService;
 use App\Traits\ResponseStructure;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -60,7 +61,17 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $data = $this->orderService->show($id);
+        } catch (AuthorizationException $exception) {
+            return $this->errorResponse(403, $exception->getMessage());
+        } catch (ModelNotFoundException $exception) {
+            return $this->errorResponse(404, 'Order not found');
+        } catch (\Exception $exception) {
+            return $this->errorResponse(500, $exception->getMessage());
+        }
+
+        return $this->successResponse(200, 'success', $data);
     }
 
     /**
