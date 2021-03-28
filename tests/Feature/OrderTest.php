@@ -266,4 +266,78 @@ class OrderTest extends TestCase
                 ]
             ]);
     }
+
+    public function testSuccessfulShowAnOrder()
+    {
+        $room = $this->createRoom();
+        $user = $this->createUser();
+        $order = Order::create([
+            'user_id' => $user->id,
+            'room_id' => $room->id,
+            'duration_in_month' => 1,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this->json('get', '/api/order/'.$order->id, ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'code',
+                'message',
+                'data' => [
+                    'id',
+                    'user_id',
+                    'room_id',
+                    'duration_in_month',
+                    'status',
+                    'time_paid'
+                ]
+            ]);
+    }
+
+    public function testCannotShowAnotherUserOrder()
+    {
+        $room = $this->createRoom();
+        $user = $this->createUser();
+        $admin = User::create([
+            'name' => 'admin',
+            'email' => 'admin@admin.com',
+            'password' => Hash::make('testing123'),
+            'is_admin' => 1
+        ]);
+        $order = Order::create([
+            'user_id' => $admin->id,
+            'room_id' => $room->id,
+            'duration_in_month' => 1,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this->json('get', '/api/order/'.$order->id, ['Accept' => 'application/json'])
+            ->assertStatus(403)
+            ->assertJson([
+                'code' => 403,
+                'message' => 'You are not allowed to do this action.'
+            ]);
+    }
+
+    public function testGetOrderWrongId()
+    {
+        $room = $this->createRoom();
+        $user = $this->createUser();
+        $order = Order::create([
+            'user_id' => $user->id,
+            'room_id' => $room->id,
+            'duration_in_month' => 1,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this->json('get', '/api/order/2', ['Accept' => 'application/json'])
+            ->assertStatus(404)
+            ->assertJsonStructure([
+                'code',
+                'message'
+            ]);
+    }
 }
