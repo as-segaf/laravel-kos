@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Http\Resources\OrderResource;
 use App\Interfaces\OrderRepositoryInterface;
 use App\Models\Order;
+use Carbon\Carbon;
 
 class OrderRepository implements OrderRepositoryInterface
 {
@@ -25,5 +26,14 @@ class OrderRepository implements OrderRepositoryInterface
         ]);
 
         return new OrderResource($order);
+    }
+
+    public function updateStatusOrder($request, $id)
+    {
+        $order = Order::findOrFail($id);
+
+        $order->status = $request->status;
+        $order->time_paid = Carbon::now();
+        $order->save();
     }
 }
