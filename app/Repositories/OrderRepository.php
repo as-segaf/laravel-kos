@@ -25,6 +25,11 @@ class OrderRepository implements OrderRepositoryInterface
             'status' => 'unpaid',
         ]);
 
+        if (!$order) {
+            throw new Exception("Error Processing Request", 1);
+            
+        }
+
         return new OrderResource($order);
     }
 
@@ -34,7 +39,10 @@ class OrderRepository implements OrderRepositoryInterface
 
         $order->status = $request->status;
         $order->time_paid = Carbon::now();
-        $order->save();
+
+        if (!$order->save()) {
+            throw new Exception("Error Processing Request", 1);
+        }
     }
 
     public function findOrderById($id)
