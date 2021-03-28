@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Order;
 use App\Models\Room;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
@@ -179,6 +180,89 @@ class OrderTest extends TestCase
                 'errors' => [
                     'room_id' => ['The room id field is required.'],
                     'duration_in_month' => ['The duration in month field is required.']
+                ]
+            ]);
+    }
+
+    public function testSuccessfulUpdateStatusOrder()
+    {
+        $room = $this->createRoom();
+        $admin = $this->createAdmin();
+        $order = Order::create([
+            'user_id' => $admin->id,
+            'room_id' => $room->id,
+            'duration_in_month' => 1,
+        ]);
+
+        $updateData = [
+            'status' => 'paid',
+        ];
+
+        Sanctum::actingAs($admin);
+
+        $this->json('patch', '/api/order/'.$order->id, $updateData, ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'code',
+                'message',
+                'data'
+            ]);
+        
+        $this->assertDatabaseHas('orders', [
+            'user_id' => $admin->id,
+            'room_id' => $room->id,
+            'duration_in_month' => 1,
+            'status' => 'paid',
+            'time_paid' => Carbon::now()
+        ]);
+    }
+
+    public function testUserCannotUpdateStatusOrder()
+    {
+        $room = $this->createRoom();
+        $user = $this->createUser();
+        $order = Order::create([
+            'user_id' => $user->id,
+            'room_id' => $room->id,
+            'duration_in_month' => 1,
+        ]);
+
+        $updateData = [
+            'status' => 'paid',
+        ];
+
+        Sanctum::actingAs($user);
+
+        $this->json('patch', '/api/order/'.$order->id, $updateData, ['Accept' => 'application/json'])
+            ->assertStatus(403)
+            ->assertJson([
+                'code' => 403,
+                'message' => 'You are not allowed to do this action.'
+            ]);
+
+        $this->assertDatabaseMissing('orders', [
+            'status' => 'paid'
+        ]);
+    }
+
+    public function testRequiredFieldForUpdateOrder()
+    {
+        $room = $this->createRoom();
+        $admin = $this->createAdmin();
+        $order = Order::create([
+            'user_id' => $admin->id,
+            'room_id' => $room->id,
+            'duration_in_month' => 1,
+        ]);
+
+        Sanctum::actingAs($admin);
+
+        $this->json('patch', '/api/order/'.$order->id, ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJson([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'status' => ['The status field is required.']
                 ]
             ]);
     }
