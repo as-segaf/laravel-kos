@@ -93,15 +93,4 @@ class OrderController extends Controller
 
         return $this->successResponse(200, 'success', $data);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
