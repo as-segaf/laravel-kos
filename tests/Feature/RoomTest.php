@@ -75,7 +75,9 @@ class RoomTest extends TestCase
                         'description',
                         'length',
                         'width',
-                        'status'
+                        'status',
+                        'used_by',
+                        'used_until'
                     ]
                 ] 
             ]);
@@ -107,7 +109,9 @@ class RoomTest extends TestCase
                     'description',
                     'length',
                     'width',
-                    'status'
+                    'status',
+                    'used_by',
+                    'used_until'
                 ]
             ]);
             
@@ -206,7 +210,9 @@ class RoomTest extends TestCase
                     'description',
                     'length',
                     'width',
-                    'status'
+                    'status',
+                    'used_by',
+                    'used_until'
                 ]
             ]);
         
@@ -337,7 +343,9 @@ class RoomTest extends TestCase
                     'description',
                     'length',
                     'width',
-                    'status'
+                    'status',
+                    'used_by',
+                    'used_until'
                 ]
             ]);
     }
@@ -362,7 +370,9 @@ class RoomTest extends TestCase
                     'description',
                     'length',
                     'width',
-                    'status'
+                    'status',
+                    'used_by',
+                    'used_until'
                 ]
             ]);
     }
