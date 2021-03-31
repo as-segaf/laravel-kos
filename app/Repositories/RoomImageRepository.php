@@ -21,4 +21,17 @@ class RoomImageRepository implements RoomImageRepositoryInterface
         
         throw new Exception("Error Processing Request", 1);
     }
+
+    public function updateById($request, $id)
+    {
+        $roomImage = RoomImage::findOrFail($id);
+
+        $roomImage->img_name = $request->img_name;
+
+        if (!$roomImage->save()) {
+            throw new Exception("Error Processing Request", 1);
+        }
+
+        return new RoomImageResource($roomImage);
+    }
 }
