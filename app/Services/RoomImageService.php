@@ -23,4 +23,13 @@ class RoomImageService
 
         throw new AuthorizationException('You are not allowed to do this action.');
     }
+
+    public function update($request, $id)
+    {
+        if (Gate::allows('isAdmin')) {
+            return $this->roomImageRepository->updateById($request, $id);
+        }
+        
+        throw new AuthorizationException('You are not allowed to do this action.');
+    }
 }

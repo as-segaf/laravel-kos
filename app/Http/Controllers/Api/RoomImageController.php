@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RoomImageRequest;
 use App\Services\RoomImageService;
 use App\Traits\ResponseStructure;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -25,7 +26,7 @@ class RoomImageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RoomImageRequest $request)
     {
         try {
             $data = $this->roomImageService->store($request);
@@ -56,9 +57,17 @@ class RoomImageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(RoomImageRequest $request, $id)
     {
-        //
+        try {
+            $data = $this->roomImageService->update($request, $id);
+        } catch (AuthorizationException $exception) {
+            return $this->errorResponse(403, $exception->getMessage());
+        } catch (\Exception $exception) {
+            return $this->errorResponse(500, $exception->getMessage());
+        }
+
+        return $this->successResponse(200, 'success', $data);
     }
 
     /**
