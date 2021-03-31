@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class RoomImageTest extends TestCase
@@ -39,5 +40,52 @@ class RoomImageTest extends TestCase
             'password' => Hash::make('testing123'),
             'is_admin' => 0
         ]);
+    }
+
+    public function testSuccessfulAddRoomImage()
+    {
+        $room = $this->createRoom();
+        $admin = $this->createAdmin();
+        $data = [
+            'room_id' => $room->id,
+            'img_name' => 'image1.png'
+        ];
+        
+        Sanctum::actingAs($admin);
+
+        $this->json('post', '/api/roomImage', $data, ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'code',
+                'message',
+                'data' => [
+                    'id',
+                    'room_id',
+                    'img_name'
+                ]
+            ]);
+
+        $this->assertDatabaseHas('room_images', $data);
+    }
+
+    public function testOnlyAdminCanAddRoomImage()
+    {
+        $room = $this->createRoom();
+        $user = $this->createUser();
+        $data = [
+            'room_id' => $room->id,
+            'img_name' => 'image1.jpg'
+        ];
+
+        Sanctum::actingAs($user);
+
+        $this->json('post', '/api/roomImage', $data, ['Accept' => 'application.json'])
+            ->assertStatus(403)
+            ->assertJson([
+                'code' => 403,
+                'message' => 'You are not allowed to do this action.'
+            ]);
+
+        $this->assertDatabaseCount('room_images', 0);
     }
 }
