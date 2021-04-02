@@ -32,4 +32,13 @@ class RoomImageService
         
         throw new AuthorizationException('You are not allowed to do this action.');
     }
+
+    public function destroy($id)
+    {
+        if (Gate::allows('isAdmin')) {
+            return $this->roomImageRepository->deleteById($id);
+        }
+
+        throw new AuthorizationException('You are not allowed to do this action.');
+    }
 }

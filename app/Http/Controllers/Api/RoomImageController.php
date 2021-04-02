@@ -40,17 +40,6 @@ class RoomImageController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -78,6 +67,14 @@ class RoomImageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $data = $this->roomImageService->destroy($id);;
+        } catch (AuthorizationException $exception) {
+            return $this->errorResponse(403, $exception->getMessage());
+        } catch (\Exception $exception) {
+            return $this->errorResponse(500, $exception->getMessage());
+        }
+
+        return $this->successResponse(200, 'success', $data);
     }
 }
