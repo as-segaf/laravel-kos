@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Http\Resources\RoomImageResource;
 use App\Interfaces\RoomImageRepositoryInterface;
 use App\Models\RoomImage;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RoomImageRepository implements RoomImageRepositoryInterface
 {
@@ -32,6 +33,17 @@ class RoomImageRepository implements RoomImageRepositoryInterface
             throw new Exception("Error Processing Request", 1);
         }
 
+        return new RoomImageResource($roomImage);
+    }
+
+    public function deleteById($id)
+    {
+        $roomImage = RoomImage::findOrFail($id);
+
+        if (!$roomImage->delete()) {
+            throw new Exception("Error Processing Request", 1);
+        }
+        
         return new RoomImageResource($roomImage);
     }
 }
