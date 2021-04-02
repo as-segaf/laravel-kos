@@ -10,4 +10,9 @@ class Room extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function roomImage()
+    {
+        return $this->hasMany(RoomImage::class, 'room_id');
+    }
 }
