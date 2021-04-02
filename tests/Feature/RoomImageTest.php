@@ -190,4 +190,45 @@ class RoomImageTest extends TestCase
             'img_name' => $roomImage->img_name
         ]);
     }
+
+    public function testSuccessfulDeleteRoomImage()
+    {
+        $room = $this->createRoom();
+        $admin = $this->createAdmin();
+        $roomImage = $this->createRoomImage($room->id);
+
+        Sanctum::actingAs($admin);
+
+        $this->json('delete', '/api/roomImage/'.$roomImage->id, ['Accept' => 'application/json'])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'code',
+                'message',
+                'data' => [
+                    'id',
+                    'room_id',
+                    'img_name'
+                ]
+            ]);
+
+        $this->assertDatabaseCount('room_images', 0);
+    }
+
+    public function testOnlyAdminCanDeleteRoomImage()
+    {
+        $room = $this->createRoom();
+        $user = $this->createUser();
+        $roomImage = $this->createRoomImage($room->id);
+
+        Sanctum::actingAs($user);
+
+        $this->json('delete', '/api/roomImage/'.$roomImage->id, ['Accept' => 'application/json'])
+            ->assertStatus(403)
+            ->assertJson([
+                'code' => 403,
+                'message' => 'You are not allowed to do this action.'
+            ]);
+
+        $this->assertDatabaseCount('room_images', 1);
+    }
 }
