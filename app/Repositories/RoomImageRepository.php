@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RoomImageRepository implements RoomImageRepositoryInterface
 {
-    public function createRoomImage($request)
+    public function createRoomImage($room_id, $fileName)
     {
         $data = RoomImage::create([
-            'room_id' => $request->room_id,
-            'img_name' => $request->img_name
+            'room_id' => $room_id,
+            'img_name' => $fileName
         ]);
 
         if ($data) {
