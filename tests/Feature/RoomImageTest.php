@@ -7,6 +7,7 @@ use App\Models\RoomImage;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -58,9 +59,10 @@ class RoomImageTest extends TestCase
     {
         $room = $this->createRoom();
         $admin = $this->createAdmin();
+        $file = UploadedFile::fake()->image('image1.png');
         $data = [
             'room_id' => $room->id,
-            'img_name' => 'image1.png'
+            'img_name' => $file
         ];
         
         Sanctum::actingAs($admin);
@@ -77,16 +79,21 @@ class RoomImageTest extends TestCase
                 ]
             ]);
 
-        $this->assertDatabaseHas('room_images', $data);
+        $this->assertFileExists(public_path('images/room_image_image1-'.time().'.'.'png'));
+        $this->assertDatabaseHas('room_images', [
+            'room_id' => $room->id,
+            'img_name' => 'room_image_image1-'.time().'.'.'png'
+        ]);
     }
 
     public function testOnlyAdminCanAddRoomImage()
     {
         $room = $this->createRoom();
         $user = $this->createUser();
+        $file = UploadedFile::fake()->image('image2.png');
         $data = [
             'room_id' => $room->id,
-            'img_name' => 'image1.jpg'
+            'img_name' => $file
         ];
 
         Sanctum::actingAs($user);
@@ -98,6 +105,7 @@ class RoomImageTest extends TestCase
                 'message' => 'You are not allowed to do this action.'
             ]);
 
+        $this->assertFileDoesNotExist(public_path('images/room_image_image2-'.time().'.'.'png'));
         $this->assertDatabaseCount('room_images', 0);
     }
 
