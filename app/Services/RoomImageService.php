@@ -17,11 +17,18 @@ class RoomImageService
 
     public function store($request)
     {
-        if (Gate::allows('isAdmin')) {
-            return $this->roomImageRepository->createRoomImage($request);
+        if (! Gate::allows('isAdmin')) {
+            throw new AuthorizationException('You are not allowed to do this action.');
         }
 
-        throw new AuthorizationException('You are not allowed to do this action.');
+        $file = $request->file('img_name');
+        $fileName = 'room_image_'.pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'-'.time().'.'.$file->getClientOriginalExtension();
+
+        if (! $file->move(public_path('images'), $fileName)) {
+            throw new Exception("Error Processing Request", 1);
+        }
+
+        return $this->roomImageRepository->createRoomImage($request->room_id, $fileName);
     }
 
     public function update($request, $id)
