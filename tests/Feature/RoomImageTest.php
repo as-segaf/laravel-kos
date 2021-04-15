@@ -51,7 +51,7 @@ class RoomImageTest extends TestCase
     {
         return RoomImage::create([
             'room_id' => $room_id,
-            'img_name' => 'image1.jpg'
+            'img_name' => 'room_image_image1-'.time().'.'.'jpg'
         ]);
     }
 
@@ -131,8 +131,10 @@ class RoomImageTest extends TestCase
         $room = $this->createRoom();
         $admin = $this->createAdmin();
         $roomImage = $this->createRoomImage($room->id); 
+        $file = UploadedFile::fake()->image('image1.png');
         $updateData = [
-            'img_name' => 'image2.jpg'
+            'oldFile' => $roomImage->img_name,
+            'img_name' => $file
         ];
 
         Sanctum::actingAs($admin);
@@ -149,9 +151,13 @@ class RoomImageTest extends TestCase
                 ]
             ]);
 
-        $this->assertDatabaseHas('room_images', $updateData);
+        $this->assertFileExists(public_path('images/room_image_image1-'.time().'.'.'png'));
+        $this->assertFileDoesNotExist(public_path('images/room_image_image1-'.time().'.'.'jpg'));
+        $this->assertDatabaseHas('room_images', [
+            'img_name' => 'room_image_image1-'.time().'.'.'png'
+        ]);
         $this->assertDatabaseMissing('room_images', [
-            'img_name' => 'image1.jpg'
+            'img_name' => $roomImage->img_name
         ]);
     }
 
@@ -160,8 +166,10 @@ class RoomImageTest extends TestCase
         $room = $this->createRoom();
         $user = $this->createUser();
         $roomImage = $this->createRoomImage($room->id);
+        $file = UploadedFile::fake()->image('image1.png');
         $updateData = [
-            'img_name' => 'image2.jpg'
+            'oldFile' => $roomImage->img_name,
+            'img_name' => $file
         ];
 
         Sanctum::actingAs($user);
@@ -173,7 +181,9 @@ class RoomImageTest extends TestCase
                 'message' => 'You are not allowed to do this action.'
             ]);
 
-        $this->assertDatabaseMissing('room_images', $updateData);
+        $this->assertDatabaseMissing('room_images', [
+            'img_name' => 'room_image_image1-'.time().'.'.'png'
+        ]);
     }
 
     public function testRequiredFieldsForUpdateRoomImage()
@@ -189,6 +199,7 @@ class RoomImageTest extends TestCase
             ->assertJson([
                 'message' => 'The given data was invalid.',
                 'errors' => [
+                    'oldFile' => ['The old file field is required.'],
                     'img_name' => ['The img name field is required.']
                 ]
             ]);
