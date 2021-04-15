@@ -330,6 +330,13 @@ Request :
 - Header :
     - Content-Type: application/json
     - Accept: application/json
+- Body :
+
+```json
+{
+    "status" : "string",
+}
+```
 
 Response :
 
@@ -344,6 +351,91 @@ Response :
         "duration_in_month" : "integer",
         "status" : "string",
         "time_paid" : "timestamp"
+    }
+}
+```
+
+## Create Room Image
+
+Request :
+- Method : POST
+- Endpoint : `/api/roomImage/{room_id}`
+- Header :
+    - Content-Type: application/json
+    - Accept: application/json
+- Body :
+
+```json
+{
+    "room_id" : "integer",
+    "img_name" : "image"
+}
+```
+
+Response :
+
+```json 
+{
+    "code" : "integer",
+    "message" : "string",
+    "data" : {
+        "id" : "integer, unique",
+        "room_id" : "integer",
+        "img_name" : "string",
+    }
+}
+```
+
+## Update Room Image
+
+Request :
+- Method : PATCH
+- Endpoint : `/api/roomImage/{roomImage_id}`
+- Header :
+    - Content-Type: application/json
+    - Accept: application/json
+- Body :
+
+```json
+{
+    "oldFile" : "string",
+    "img_name" : "image"
+}
+```
+
+Response :
+
+```json 
+{
+    "code" : "integer",
+    "message" : "string",
+    "data" : {
+        "id" : "integer, unique",
+        "room_id" : "integer",
+        "img_name" : "string",
+    }
+}
+```
+
+## Delete Room Image
+
+Request :
+- Method : DELETE
+- Endpoint : `/api/roomImage/{roomImage_id}`
+- Header :
+    - Content-Type: application/json
+    - Accept: application/json
+
+Response :
+
+```json 
+{
+    "code" : "integer",
+    "message" : "string",
+    "data" : {
+        "id" : "integer, unique",
+        "room_id" : "integer",
+        "img_name" : "string",
     }
 }
 ```
