@@ -31,6 +31,6 @@ Route::get('/room/{room}', [RoomController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function() {
     Route::resource('order', OrderController::class)->except('create', 'edit');
     Route::resource('room', RoomController::class)->only('store', 'update', 'destroy');
-    Route::resource('roomImage', RoomImageController::class);
+    Route::resource('roomImage', RoomImageController::class)->only('store', 'update', 'destroy');
     Route::post('/logout', [AuthController::class, 'logout']);
 });
