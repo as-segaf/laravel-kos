@@ -43,11 +43,17 @@ class RoomImageService
 
     public function destroy($id)
     {
-        if (Gate::allows('isAdmin')) {
-            return $this->roomImageRepository->deleteById($id);
+        if (! Gate::allows('isAdmin')) {
+            throw new AuthorizationException('You are not allowed to do this action.');
         }
 
-        throw new AuthorizationException('You are not allowed to do this action.');
+        $roomImage = $this->roomImageRepository->deleteById($id);
+
+        if (\File::exists(public_path('images/'.$roomImage->img_name))) {
+            $this->deleteImage($$roomImage->img_name);
+        }
+
+        return $roomImage;
     }
 
     public function deleteImage($fileName)
