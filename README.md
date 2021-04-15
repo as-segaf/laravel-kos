@@ -87,7 +87,16 @@ Response :
         "description" : "string",
         "length" : "integer",
         "width" : "integer",
-        "status" : "string"
+        "status" : "string",
+        "used_by" : "integer",
+        "used_until" : "timestamp",
+        "relations" : {
+            "roomImage" : {
+                "id" : "integer, unique",
+                "room_id" : "integer",
+                "img_name" : "string"
+            }
+        }
     }
 }
 ```
@@ -113,7 +122,16 @@ Response :
             "description" : "string",
             "length" : "integer",
             "width" : "integer",
-            "status" : "string"
+            "status" : "string",
+            "used_by" : "integer",
+            "used_until" : "timestamp",
+            "relations" : {
+                "roomImage" : {
+                    "id" : "integer, unique",
+                    "room_id" : "integer",
+                    "img_name" : "string"
+                }
+            }
         },
         {
             "id" : "integer, unique",
@@ -121,7 +139,16 @@ Response :
             "description" : "string",
             "length" : "integer",
             "width" : "integer",
-            "status" : "string"
+            "status" : "string",
+            "used_by" : "integer",
+            "used_until" : "timestamp",
+            "relations" : {
+                "roomImage" : {
+                    "id" : "integer, unique",
+                    "room_id" : "integer",
+                    "img_name" : "string"
+                }
+            }
         }
     ]
 }
@@ -168,7 +195,16 @@ Response :
         "description" : "string",
         "length" : "integer",
         "width" : "integer",
-        "status" : "string"
+        "status" : "string",
+        "used_by" : "integer",
+        "used_until" : "timestamp",
+        "relations" : {
+            "roomImage" : {
+                "id" : "integer, unique",
+                "room_id" : "integer",
+                "img_name" : "string"
+            }
+        }
     }
 }
 ```
@@ -205,7 +241,16 @@ Response :
         "description" : "string",
         "length" : "integer",
         "width" : "integer",
-        "status" : "string"
+        "status" : "string",
+        "used_by" : "integer",
+        "used_until" : "timestamp",
+        "relations" : {
+            "roomImage" : {
+                "id" : "integer, unique",
+                "room_id" : "integer",
+                "img_name" : "string"
+            }
+        }
     }
 }
 ```
