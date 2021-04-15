@@ -21,23 +21,24 @@ class RoomImageService
             throw new AuthorizationException('You are not allowed to do this action.');
         }
 
-        $file = $request->file('img_name');
-        $fileName = 'room_image_'.pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'-'.time().'.'.$file->getClientOriginalExtension();
-
-        if (! $file->move(public_path('images'), $fileName)) {
-            throw new Exception("Error Processing Request", 1);
-        }
+        $fileName = $this->moveImageToPulic($request->file('img_name'));
 
         return $this->roomImageRepository->createRoomImage($request->room_id, $fileName);
     }
 
     public function update($request, $id)
     {
-        if (Gate::allows('isAdmin')) {
-            return $this->roomImageRepository->updateById($request, $id);
+        if (! Gate::allows('isAdmin')) {
+            throw new AuthorizationException('You are not allowed to do this action.');
         }
+
+        if (\File::exists(public_path('images/'.$request->oldFile))) {
+            $this->deleteImage($request->oldFile);
+        }
+
+        $fileName = $this->moveImageToPulic($request->file('img_name'));
         
-        throw new AuthorizationException('You are not allowed to do this action.');
+        return $this->roomImageRepository->updateById($fileName, $id);
     }
 
     public function destroy($id)
@@ -47,5 +48,25 @@ class RoomImageService
         }
 
         throw new AuthorizationException('You are not allowed to do this action.');
+    }
+
+    public function deleteImage($fileName)
+    {
+        if (!\File::delete(public_path('images/'.$fileName))) {
+            throw new \Exception("Failed to delete image", 1);
+        }
+
+        return $fileName;
+    }
+
+    public function moveImageToPulic($file)
+    {
+        $fileName = 'room_image_'.pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'-'.time().'.'.$file->getClientOriginalExtension();
+
+        if (! $file->move(public_path('images'), $fileName)) {
+            throw new \Exception("Failed to move image to the path", 1);
+        }
+
+        return $fileName;
     }
 }
