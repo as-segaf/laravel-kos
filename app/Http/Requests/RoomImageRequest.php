@@ -32,6 +32,7 @@ class RoomImageRequest extends FormRequest
 
         if ($this->method() == 'PATCH' || $this->method() == 'PUT') {
             return [
+                'oldFile' => 'required',
                 'img_name' => 'required'
             ];
         }
