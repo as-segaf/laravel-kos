@@ -43,6 +43,8 @@ class OrderRepository implements OrderRepositoryInterface
         if (!$order->save()) {
             throw new Exception("Error Processing Request", 1);
         }
+
+        return new OrderResource($order);
     }
 
     public function findOrderById($id)
