@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Room extends Model
+class RoomImage extends Model
 {
     use HasFactory;
 
     protected $guarded = [];
 
-    public function roomImage()
+    public function room()
     {
-        return $this->hasMany(RoomImage::class, 'room_id');
+        return $this->belongsTo(Room::class, 'room_id');
     }
 }

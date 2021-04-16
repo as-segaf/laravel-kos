@@ -22,7 +22,10 @@ class RoomResource extends JsonResource
             'width' => $this->width,
             'status' => $this->status,
             'used_by' => $this->used_by,
-            'used_until' => $this->used_until
+            'used_until' => $this->used_until,
+            'relations' => [
+                'roomImage' => RoomImageResource::collection($this->whenLoaded('roomImage'))
+            ]
         ];
     }
 }

@@ -10,7 +10,7 @@ class RoomRepository implements RoomRepositoryInterface
 {
     public function getAllRooms()
     {
-        return RoomResource::collection(Room::all());
+        return RoomResource::collection(Room::with('roomImage')->get());
     }
 
     public function findRoomById($id)

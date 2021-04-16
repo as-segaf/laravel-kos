@@ -77,7 +77,16 @@ class RoomTest extends TestCase
                         'width',
                         'status',
                         'used_by',
-                        'used_until'
+                        'used_until',
+                        'relations' => [
+                            'roomImage' => [
+                                '*' => [
+                                    'id',
+                                    'room_id',
+                                    'img_name'
+                                ]
+                            ]
+                        ]
                     ]
                 ] 
             ]);
