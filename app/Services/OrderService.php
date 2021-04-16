@@ -3,17 +3,19 @@
 namespace App\Services;
 
 use App\Interfaces\OrderRepositoryInterface;
-use App\Models\Order;
+use App\Interfaces\RoomRepositoryInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Gate;
 
 class OrderService
 {
     protected $orderRepository;
+    protected $roomRepository;
 
-    public function __construct(OrderRepositoryInterface $orderRepository)
+    public function __construct(OrderRepositoryInterface $orderRepository, RoomRepositoryInterface $roomRepository)
     {
-        return $this->orderRepository = $orderRepository;
+        $this->roomRepository = $roomRepository;
+        $this->orderRepository = $orderRepository;
     }
 
     public function index()
@@ -28,11 +30,21 @@ class OrderService
 
     public function update($request, $id)
     {
-        if (Gate::allows('isAdmin')) {
-            return $this->orderRepository->updateStatusOrder($request, $id);
+        if (! Gate::allows('isAdmin')) {
+            throw new AuthorizationException('You are not allowed to do this action.');
         }
 
-        throw new AuthorizationException('You are not allowed to do this action.');
+        $order = $this->orderRepository->updateStatusOrder($request, $id);
+
+        if ($order->status == 'paid') {
+            $updateData = [
+                'user_id' => $order->user_id,
+                'duration_in_month' => $order->duration_in_month
+            ];
+            $this->roomRepository->updateRoomUser($updateData, $order->id);
+        }
+
+        return $order;
     }
 
     public function show($id)
