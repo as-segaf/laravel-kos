@@ -28,7 +28,7 @@ class RoomRequest extends FormRequest
             'description' => 'nullable',
             'length' => 'required|integer',
             'width' => 'required|integer',
-            'status' => 'required'
+            'price_per_month' => 'required|integer'
         ];
     }
 }
