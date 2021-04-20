@@ -87,7 +87,7 @@ Response :
         "description" : "string",
         "length" : "integer",
         "width" : "integer",
-        "status" : "string",
+        "price_per_month" : "integer",
         "used_by" : "integer",
         "used_until" : "timestamp",
         "relations" : {
@@ -122,7 +122,7 @@ Response :
             "description" : "string",
             "length" : "integer",
             "width" : "integer",
-            "status" : "string",
+            "price_per_month" : "integer",
             "used_by" : "integer",
             "used_until" : "timestamp",
             "relations" : {
@@ -139,7 +139,7 @@ Response :
             "description" : "string",
             "length" : "integer",
             "width" : "integer",
-            "status" : "string",
+            "price_per_month" : "integer",
             "used_by" : "integer",
             "used_until" : "timestamp",
             "relations" : {
@@ -179,7 +179,7 @@ Request :
     "description" : "string",
     "length" : "integer",
     "width" : "integer",
-    "status" : "string"
+    "price_per_month" : "integer",
 }
 ```
 
@@ -195,7 +195,7 @@ Response :
         "description" : "string",
         "length" : "integer",
         "width" : "integer",
-        "status" : "string",
+        "price_per_month" : "integer",
         "used_by" : "integer",
         "used_until" : "timestamp",
         "relations" : {
@@ -225,7 +225,7 @@ Request :
     "description" : "string",
     "length" : "integer",
     "width" : "integer",
-    "status" : "string"
+    "price_per_month" : "integer",
 }
 ```
 
@@ -241,7 +241,7 @@ Response :
         "description" : "string",
         "length" : "integer",
         "width" : "integer",
-        "status" : "string",
+        "price_per_month" : "integer",
         "used_by" : "integer",
         "used_until" : "timestamp",
         "relations" : {
@@ -276,7 +276,7 @@ Response :
         "description" : "string",
         "length" : "integer",
         "width" : "integer",
-        "status" : "string"
+        "price_per_month" : "integer",
     }
 }
 ```
