@@ -23,7 +23,7 @@ class OrderTest extends TestCase
             'description' => 'a good room',
             'length' => 2,
             'width' => 1,
-            'status' => 'unused'
+            'price_per_month' => 500000
         ]);
     }
 
@@ -34,6 +34,7 @@ class OrderTest extends TestCase
             'description' => 'a good room',
             'length' => 2,
             'width' => 1,
+            'price_per_month' => 500000,
             'used_by' => $userId,
             'used_until' => Carbon::parse('2021-10-25')
         ]);

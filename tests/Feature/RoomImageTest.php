@@ -23,7 +23,7 @@ class RoomImageTest extends TestCase
             'description' => 'a good room',
             'length' => 2,
             'width' => 1,
-            'status' => 'unused'
+            'price_per_month' => 500000
         ]);
     }
 
