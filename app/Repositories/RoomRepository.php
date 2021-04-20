@@ -28,7 +28,7 @@ class RoomRepository implements RoomRepositoryInterface
             'description' => $request->description,
             'length' => $request->length,
             'width' => $request->width,
-            'status' => $request->status
+            'price_per_month' => $request->price_per_month
         ]);
 
         if (!$room) {
@@ -45,7 +45,7 @@ class RoomRepository implements RoomRepositoryInterface
         $room->description = $request->description;
         $room->length = $request->length;
         $room->width = $request->width;
-        $room->status = $request->status;
+        $room->price_per_month = $request->price_per_month;
 
         if (!$room->save()) {
            throw new Exception("Error Processing Request", 1);
