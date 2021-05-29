@@ -23,7 +23,20 @@ class OrderTest extends TestCase
             'description' => 'a good room',
             'length' => 2,
             'width' => 1,
-            'status' => 'unused'
+            'price_per_month' => 500000
+        ]);
+    }
+
+    public function createUsedRoom($userId)
+    {
+        return Room::create([
+            'name' => 'room 1',
+            'description' => 'a good room',
+            'length' => 2,
+            'width' => 1,
+            'price_per_month' => 500000,
+            'used_by' => $userId,
+            'used_until' => Carbon::parse('2021-10-25')
         ]);
     }
 
@@ -186,8 +199,8 @@ class OrderTest extends TestCase
 
     public function testSuccessfulUpdateStatusOrder()
     {
-        $room = $this->createRoom();
         $admin = $this->createAdmin();
+        $room = $this->createUsedRoom($admin->id);
         $order = Order::create([
             'user_id' => $admin->id,
             'room_id' => $room->id,
@@ -214,6 +227,12 @@ class OrderTest extends TestCase
             'duration_in_month' => 1,
             'status' => 'paid',
             'time_paid' => Carbon::now()
+        ]);
+
+        $this->assertDatabaseHas('rooms', [
+            'id' => $room->id,
+            'used_by' => $order->user_id,
+            'used_until' => Carbon::parse($room->used_until)->addMonths($order->duration_in_month)
         ]);
     }
 

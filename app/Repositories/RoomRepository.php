@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Http\Resources\RoomResource;
 use App\Interfaces\RoomRepositoryInterface;
 use App\Models\Room;
+use Carbon\Carbon;
 
 class RoomRepository implements RoomRepositoryInterface
 {
@@ -27,7 +28,7 @@ class RoomRepository implements RoomRepositoryInterface
             'description' => $request->description,
             'length' => $request->length,
             'width' => $request->width,
-            'status' => $request->status
+            'price_per_month' => $request->price_per_month
         ]);
 
         if (!$room) {
@@ -44,7 +45,7 @@ class RoomRepository implements RoomRepositoryInterface
         $room->description = $request->description;
         $room->length = $request->length;
         $room->width = $request->width;
-        $room->status = $request->status;
+        $room->price_per_month = $request->price_per_month;
 
         if (!$room->save()) {
            throw new Exception("Error Processing Request", 1);
@@ -59,6 +60,24 @@ class RoomRepository implements RoomRepositoryInterface
         
         if (!$room->delete()) {
             throw new Exception("Error Processing Request", 1);
+        }
+
+        return new RoomResource($room);
+    }
+
+    public function updateRoomUser($data, $id)
+    {
+        $room = Room::findOrFail($id);
+        $room->used_by = $data['user_id'];
+
+        if ($room->used_by == $data['user_id']) {
+            $room->used_until = Carbon::parse($room->used_until)->addMonths($data['duration_in_month']);
+        } else {
+            $room->used_until = Carbon::now()->addMonths($data['duration_in_month']);
+        }
+
+        if (!$room->save()) {
+            throw new Exception("Failed to update room user", 1);
         }
 
         return new RoomResource($room);

@@ -19,7 +19,7 @@ class CreateRoomsTable extends Migration
             $table->string('description')->nullable();
             $table->tinyInteger('length');
             $table->tinyInteger('width');
-            $table->string('status')->default('unused');
+            $table->bigInteger('price_per_month');
             $table->foreignId('used_by')->nullable()->constrained('users');
             $table->timestamp('used_until')->nullable();
             $table->timestamps();

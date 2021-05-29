@@ -21,7 +21,7 @@ class RoomTest extends TestCase
             'description' => 'a good room',
             'length' => 2,
             'width' => 1,
-            'status' => 'unused'
+            'price_per_month' => 500000
         ]);
     }
 
@@ -54,13 +54,13 @@ class RoomTest extends TestCase
                 'description' => 'this is good room',
                 'length' => 3,
                 'width' => 2,
-                'status' => 'unused'
+                'price_per_month' => 500000
         ], [
             'name' => 'room 2',
             'description' => 'this is good room',
             'length' => 3,
             'width' => 2,
-            'status' => 'unused'
+            'price_per_month' => 500000
         ]);
 
         $this->json('get', '/api/room', ['Accept' => 'application/json'])
@@ -75,7 +75,7 @@ class RoomTest extends TestCase
                         'description',
                         'length',
                         'width',
-                        'status',
+                        'price_per_month',
                         'used_by',
                         'used_until',
                         'relations' => [
@@ -102,7 +102,7 @@ class RoomTest extends TestCase
             'description' => 'a good room',
             'length' => 3,
             'width' => 2,
-            'status' => 'unused'
+            'price_per_month' => 500000
         ];
 
         Sanctum::actingAs($user);
@@ -118,7 +118,7 @@ class RoomTest extends TestCase
                     'description',
                     'length',
                     'width',
-                    'status',
+                    'price_per_month',
                     'used_by',
                     'used_until'
                 ]
@@ -138,7 +138,7 @@ class RoomTest extends TestCase
             'description' => 'a good room',
             'length' => 3,
             'width' => 2,
-            'status' => 'unused'
+            'price_per_month' => 500000
         ];
 
         Sanctum::actingAs($user);
@@ -160,7 +160,7 @@ class RoomTest extends TestCase
             'description' => 'a good room',
             'length' => 2,
             'width' => 1,
-            'status' => 'unused'
+            'price_per_month' => 500000
         ];
 
         $this->json('post', '/api/room', $data, ['Accept' => 'application/json'])
@@ -187,7 +187,7 @@ class RoomTest extends TestCase
                     'name' => ['The name field is required.'],
                     'length' => ['The length field is required.'],
                     'width' => ['The width field is required.'],
-                    'status' => ['The status field is required.']
+                    'price_per_month' => ['The price per month field is required.']
                 ]
             ]);
     }
@@ -203,7 +203,7 @@ class RoomTest extends TestCase
             'description' => 'a very good room',
             'length' => 5,
             'width' => 4,
-            'status' => 'used'
+            'price_per_month' => 500000,
         ];
         
         Sanctum::actingAs($user);
@@ -219,7 +219,7 @@ class RoomTest extends TestCase
                     'description',
                     'length',
                     'width',
-                    'status',
+                    'price_per_month',
                     'used_by',
                     'used_until'
                 ]
@@ -230,7 +230,7 @@ class RoomTest extends TestCase
             'description' => 'a good room',
             'length' => 2,
             'width' => 1,
-            'status' => 'unused'
+            'price_per_month' => 500000
         ]);
         $this->assertDatabaseHas('rooms', $updateData);
     }
@@ -246,7 +246,7 @@ class RoomTest extends TestCase
             'description' => 'a very good room',
             'length' => 5,
             'width' => 4,
-            'status' => 'used'
+            'price_per_month' => 500000
         ];
 
         Sanctum::actingAs($user);
@@ -263,7 +263,7 @@ class RoomTest extends TestCase
             'description' => 'a good room',
             'length' => 2,
             'width' => 1,
-            'status' => 'unused'
+            'price_per_month' => 500000
         ]);
     }
 
@@ -275,7 +275,7 @@ class RoomTest extends TestCase
             'description' => 'a new desc room',
             'length' => 5,
             'width' => 4,
-            'status' => 'used'
+            'price_per_month' => 500000
         ];
 
         $this->json('patch', '/api/room/'.$room->id, $data, ['Accept' => 'application/json'])
@@ -303,7 +303,7 @@ class RoomTest extends TestCase
                     'name' => ['The name field is required.'],
                     'length' => ['The length field is required.'],
                     'width' => ['The width field is required.'],
-                    'status' => ['The status field is required.']
+                    'price_per_month' => ['The price per month field is required.']
                 ]
             ]);
     }
@@ -319,7 +319,7 @@ class RoomTest extends TestCase
             'description' => 'a new updated room',
             'length' => 5,
             'width' => 4,
-            'status' => 'used'
+            'price_per_month' => 500000
         ];
 
         Sanctum::actingAs($admin);
@@ -352,7 +352,7 @@ class RoomTest extends TestCase
                     'description',
                     'length',
                     'width',
-                    'status',
+                    'price_per_month',
                     'used_by',
                     'used_until'
                 ]
@@ -379,7 +379,7 @@ class RoomTest extends TestCase
                     'description',
                     'length',
                     'width',
-                    'status',
+                    'price_per_month',
                     'used_by',
                     'used_until'
                 ]
