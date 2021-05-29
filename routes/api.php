@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\RoomController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\RoomImageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +20,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/room', [RoomController::class, 'index']);
+Route::get('/room/{room}', [RoomController::class, 'show']);
+
+Route::middleware('auth:sanctum')->group(function() {
+    Route::resource('order', OrderController::class)->except('create', 'edit');
+    Route::resource('room', RoomController::class)->only('store', 'update', 'destroy');
+    Route::resource('roomImage', RoomImageController::class)->only('store', 'update', 'destroy');
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
